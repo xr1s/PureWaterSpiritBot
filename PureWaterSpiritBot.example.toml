@@ -1,0 +1,57 @@
+token = "YOUR_TELEGRAM_BOT_TOKEN"
+channel = -1001234567890
+
+# 管理员可以投稿，并拥有自己的分类和发布时间表。谁是管理员只由这份名单决定，
+# 从名单里删掉的人会被停用（历史记录保留）。
+# 分类和时段存在数据库里，管理员通过 /categories、/schedule 和 /settings 自己编辑。
+[[admins]]
+user_id = 123456789 # @example_user
+super = true        # 超级管理员，可以用 /peek 查看和撤下其他管理员的排队投稿
+
+[[admins]]
+user_id = 987654321 # @another_user
+
+[database]
+# SeaORM 数据库连接 URL；SQLite 创建文件时使用 mode=rwc。
+url = "sqlite://PureWaterSpiritBot.db?mode=rwc"
+
+[submission]
+media_group_wait = "1s"
+
+# 管理员没有在数据库里单独设置时使用的默认值。
+[schedule]
+timezone = "Asia/Shanghai"
+misfire_grace = "2h"
+send_interval = "3s"
+
+# 拒绝投稿时没有写理由，就把这段话发给投稿人。不配置则只告知被拒绝。
+# [review]
+# 审核群（普通群，不要开话题）。配置了它，非管理员也可以私聊 Bot 投稿，
+# 投稿会发到这个群里，由管理员通过或拒绝。不配置则只有管理员能投稿。
+# Bot 需要在群里，并且能发消息。
+# group = -1002222222222
+# default_reject_note = "不符合频道的投稿要求"
+
+# 管理员私聊发一条只含链接的消息时，Bot 用 gallery-dl 或 yt-dlp 抓取其中的图片和视频。
+# 两个工具都需要自己安装；没装的会被跳过，都没装时 Bot 会提示不支持链接。
+# 下面的项都可以不配置。
+# [fetch]
+# gallery_dl = "gallery-dl" # 路径或命令名，默认从 PATH 里找
+# yt_dlp = "yt-dlp"
+# timeout = "2m"            # 单个工具处理一条链接的最长时间
+# max_files = 30            # 一条链接最多下载的文件数
+
+# 识图多模态模型，用来给图片打标签、提取并翻译图中文字。
+# 使用 OpenAI 兼容的 /chat/completions 接口，OpenAI、Gemini、OpenRouter、
+# Ollama、vLLM 等都提供这种接口。不配置则不启用。
+# [vision]
+# base_url = "https://api.openai.com/v1"
+# api_key = "YOUR_API_KEY"      # 本地部署的服务可以不写
+# model = "gpt-4o-mini"
+# timeout = "60s"               # 单次请求的最长时间
+# max_images = 10               # 一次最多分析几张图片
+# json_mode = true              # 服务不认 response_format 参数时改成 false
+# 原样合并进每个请求的额外字段，用来传服务特有的参数。
+# 例如 DeepSeek 默认开启思考模式，识图打标签不需要，可以关掉：
+# [vision.extra_body]
+# thinking = { type = "disabled" }
